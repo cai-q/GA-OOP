@@ -268,7 +268,13 @@ classdef Individuality
             firstRow(firstRow == 0) = lost;
             
             sequence(1, :) = firstRow;
-            ret = Individuality(sequence);
+            temp = Individuality(sequence);
+            
+            if temp.Fitness > obj.Fitness
+                ret = temp;
+            else
+                ret = obj;
+            end
         end
     end
 end
