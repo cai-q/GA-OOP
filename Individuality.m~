@@ -148,7 +148,7 @@ classdef Individuality
             % calculateFitness 计算该个体的适应度值
             %   个体的适应度值取值为该个体表示的处理模型所消耗时间的倒数。
             
-            ret = 10000 / obj.calculateMakespan;
+            ret = 1 / obj.calculateMakespan;
         end
         
         function ret = calculateMakespan(obj)
@@ -221,16 +221,17 @@ classdef Individuality
                 end
             end
             
-            ret = obj.calculateMakespanByMachineStop(machineStop);
+            Cmax = max(cell2mat(machineStop));
+            ret = max(Cmax);
         end
         
-        function ret = learning(obj, SD, RD, p1, p2)
+        function ret = learning(obj, SD, RD)
             sequence = obj.Chromosome.Sequence;
             for j = 1:Const.JOB_NUMBER
                 r = rand;% 生成学习随机数
-                if r <= p1% 如果小于p1，则不变
+                if r <= Const.LEARNING_THRESHOLD_P1% 如果小于p1，则不变
                     continue;
-                elseif r <= p2% 如果在p1和p2之间，则向社会学习对象学习
+                elseif r <= Const.LEARNING_THRESHOLD_P2% 如果在p1和p2之间，则向社会学习对象学习
                     gene = SD(:, j);
                     occurredGene = sequence(:, 1:j - 1);
                     if ismember(gene(1), occurredGene)
@@ -285,24 +286,19 @@ classdef Individuality
     end
     
     methods(Access = protected)
-        function ret = calculateMakespanByMachineStop(~, ms)
+        function ret = calculateMakespanByMachineStop(ms)
             ret = 0;
-            a = Const.MAKESPAN_FACTOR_ALPHA;
-            b = Const.MAKESPAN_FACTOR_BETA;
-            w = Const.MAKESPAN_FACTOR_WORKTIME;
             
             for i = 1:length(ms)% 遍历所有工厂
                 p1 = ms{1, i};
                 p2 = ms{2, i};
                 for j = 1:length(ms{1, i})% 遍历工厂中的所有手术台
                     if p1(j) >= Const.MAKESPAN_FACTOR_WORKTIME
-                        ret = ret + (p1(j) - w) * a + w;% 超出的工作时间，超出部分要乘以系数
+                        ret = ret + (p1(j) - Const.MAKESPAN_FACTOR_WORKTIME) * Const.MAKESPAN_FACTOR_ALPHA + Const.MAKESPAN_FACTOR_WORKTIME;% 超出g
                     else
-                        ret = ret + p1(j);
+                        ret
                     end
-                end% 计算手术室的makespan
-                
-                ret = ret + max(p2) * b * length(p2);% 计算恢复室的makespan
+                end
             end
         end
     end

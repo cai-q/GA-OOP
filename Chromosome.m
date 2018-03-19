@@ -24,15 +24,15 @@ classdef Chromosome
                 for i = 1:Const.JOB_NUMBER
                     obj.Sequence(2, i) = unidrnd(Const.FACTORY_NUMBER);
                 end% 初始化染色体，为每个基因排序，并为每个工件随机分配一个工厂
-                
-                for i = 1:Const.JOB_NUMBER
-                    jobID = obj.Sequence(1, i);
-                    jobSpecificFactories = Const.JOB_SPECIFIC_FACTORIES{jobID};
-                    if ~isempty(jobSpecificFactories)
-                        obj.Sequence(2, i) = randsample(jobSpecificFactories, 1);
-                    end
-                end% 为指定了特定工厂的工件修复染色体基因位
             end
+            
+            for i = 1:Const.JOB_NUMBER
+                jobID = obj.Sequence(1, i);
+                jobSpecificFactories = Const.JOB_SPECIFIC_FACTORIES{jobID};
+                if ~isempty(jobSpecificFactories)
+                    obj.Sequence(2, i) = randsample(jobSpecificFactories, 1);
+                end
+            end% 为指定了特定工厂的工件修复染色体基因位
         end
     end
 end
