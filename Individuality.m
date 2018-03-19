@@ -147,7 +147,7 @@ classdef Individuality
         function ret = calculateFitness(obj)
             % calculateFitness 计算该个体的适应度值
             %   个体的适应度值取值为该个体表示的处理模型所消耗时间的倒数。
-            
+
             ret = 10000 / obj.calculateMakespan;
         end
         
