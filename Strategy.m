@@ -3,14 +3,27 @@ classdef Strategy
     %   该类包含了多个算法策略，可根据每个算法策略来生成结果
     
     methods(Static)
-        function SPT()
+        function res = SPT()
+            res = ones(Const.MAX_GENERATION, 1);
             
+            pst = Const.PROCESS_TIME;
+            sum_pst = pst(:, 1) + pst(:, 2);
+            [~, index] = sort(sum_pst);
+            
+            sequence = zeros(2, Const.JOB_NUMBER);
+            sequence(1, :) = index';
+            for i = 1:Const.JOB_NUMBER
+                sequence(2, i) = unidrnd(Const.FACTORY_NUMBER);
+            end
+            
+            ind = Individuality(sequence);
+            res = res .* ind.Fitness;
         end
         
-        function GA()
+        function res = GA()
             population = Population(true);
             bestIndividuality = population.bestIndividuality;
-            res = zeros(Const.MAX_GENERATION, 3);
+            res = zeros(Const.MAX_GENERATION, 2);
             
             for i = 1:Const.MAX_GENERATION
                 population = population.selection;% 选择
@@ -26,25 +39,14 @@ classdef Strategy
                 population.Individualities{index} = bestIndividuality;
                 population.Fitness(index) = bestIndividuality.Fitness;% 种群中最差的个体被淘汰，被总体最优个体替换
 
-                res(i, :) = [i, bestIndividuality.Fitness, sum(population.Fitness) / Const.POPULATION_SIZE];
+                res(i, :) = [bestIndividuality.Fitness, sum(population.Fitness) / Const.POPULATION_SIZE];
             end
-            
-            table = array2table(res, 'VariableNames', {'Generation', 'BestFitness', 'AverageFitness'});
-            writetable(table, 'GA.txt', 'Delimiter', '\t', 'WriteRowNames', true);
-            
-            figure;
-            plot(res(:, 1), res(:, 2), res(:, 1), res(:, 3));
-            title('GA (Genetic Algorithm)');
-            xlabel('Generation');
-            ylabel('Fitness');
-            legend('best', 'average');
-            saveas(gcf, 'GA.png');
         end
         
-        function LBGA()
+        function res = LBGA()
             population = Population(true);
             bestIndividuality = population.bestIndividuality;
-            res = zeros(Const.MAX_GENERATION, 3);
+            res = zeros(Const.MAX_GENERATION, 2);
 
             p1 = (Const.LEARNING_THRESHOLD_P1_MAX + Const.LEARNING_THRESHOLD_P1_MIN) / 2;
             p2 = (Const.LEARNING_THRESHOLD_P2_MAX + Const.LEARNING_THRESHOLD_P2_MIN) / 2;
@@ -65,25 +67,14 @@ classdef Strategy
 
                 population = population.learning(p1, p2);% 学习
 
-                res(i, :) = [i, bestIndividuality.Fitness, sum(population.Fitness) / Const.POPULATION_SIZE];
+                res(i, :) = [bestIndividuality.Fitness, sum(population.Fitness) / Const.POPULATION_SIZE];
             end
-            
-            table = array2table(res, 'VariableNames', {'Generation', 'BestFitness', 'AverageFitness'});
-            writetable(table, 'LBGA.txt', 'Delimiter', '\t', 'WriteRowNames', true);
-            
-            figure;
-            plot(res(:, 1), res(:, 2), res(:, 1), res(:, 3));
-            title('LBGA (Learning-Based Genetic Algorithm)');
-            xlabel('Generation');
-            ylabel('Fitness');
-            legend('best', 'average');
-            saveas(gcf, 'LBGA.png');
         end
         
-        function ALBGA()
+        function res = ALBGA()
             population = Population(true);
             bestIndividuality = population.bestIndividuality;
-            res = zeros(Const.MAX_GENERATION, 3);
+            res = zeros(Const.MAX_GENERATION, 2);
 
             p1 = Const.LEARNING_THRESHOLD_P1_MIN;
             p2 = Const.LEARNING_THRESHOLD_P2_MAX;
@@ -109,19 +100,8 @@ classdef Strategy
                 p2 = p2 - p2_step;
                 population = population.learning(p1, p2);% 学习
 
-                res(i, :) = [i, bestIndividuality.Fitness, sum(population.Fitness) / Const.POPULATION_SIZE];
+                res(i, :) = [bestIndividuality.Fitness, sum(population.Fitness) / Const.POPULATION_SIZE];
             end
-            
-            table = array2table(res, 'VariableNames', {'Generation', 'BestFitness', 'AverageFitness'});
-            writetable(table, 'ALBGA.txt', 'Delimiter', '\t', 'WriteRowNames', true);
-            
-            figure;
-            plot(res(:, 1), res(:, 2), res(:, 1), res(:, 3));
-            title('ALBGA (Adapted Learning-Based Genetic Algorithm)');
-            xlabel('Generation');
-            ylabel('Fitness');
-            legend('best', 'average');
-            saveas(gcf, 'ALBGA.png');
         end
     end
 end

@@ -2,8 +2,8 @@ classdef Const
     % Const 常量类
     %   该类中存储了程序所需的常量
     properties(Constant)
-        MAX_GENERATION = 100;% 迭代次数
-        POPULATION_SIZE = 10;% 种群个数
+        MAX_GENERATION = 200;% 迭代次数
+        POPULATION_SIZE = 200;% 种群个数
         CROSSOVER_PROBABILITY = 0.6;% 交叉概率
         MUTATION_PROBABILITY = 0.1;% 变异概率
         
