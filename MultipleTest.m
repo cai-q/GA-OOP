@@ -6,32 +6,43 @@ for i = 1:length(TM)
     V = Const.V;
     V.updateVariable(TM(i, :));
 
+    tic;
     SPT = doOneSPT();% 做一次SPT
+    tSPT = toc;
+    
+    tic;
     GA = doTenGA();% 做10次GA
+    tGA = toc;
+    
+    tic;
     LBGA = doTenLBGA();% 做10次LBGA
+    tLBGA = toc;
+    
+    tic;
     ALBGA = doTenALBGA();% 做10次ALBGA
+    tALBGA = toc;
     
     best = min([SPT(1, :), GA(1, :), LBGA(1, :), ALBGA(1, :)]);
     TM(i, 5) = calculateRE(SPT(1, 1), best);
-    TM(i, 6) = SPT(2, 1);
+    TM(i, 6) = tSPT;
     
     reGA = calculateRE(GA(1, :), best);
     TM(i, 7) = min(reGA);
     TM(i, 8) = max(reGA);
     TM(i, 9) = mean(reGA);
-    TM(i, 10) = mean(GA(2, :));
+    TM(i, 10) = tGA / 10;
     
     reLBGA = calculateRE(LBGA(1, :), best);
     TM(i, 11) = min(reLBGA);
     TM(i, 12) = max(reLBGA);
     TM(i, 13) = mean(reLBGA);
-    TM(i, 14) = mean(LBGA(2, :));
+    TM(i, 14) = tLBGA / 10;
     
     reALBGA = calculateRE(ALBGA(1, :), best);
     TM(i, 15) = min(reALBGA);
     TM(i, 16) = max(reALBGA);
     TM(i, 17) = mean(reALBGA);
-    TM(i, 18) = mean(ALBGA(2, :));
+    TM(i, 18) = tALBGA / 10;
 end
 
 function ret = calculateRE(a, b)
@@ -65,35 +76,27 @@ function ret = getTestMatrix()
 end
 
 function ret = doOneSPT()
-    ret = zeros(2, 1);
-    tic;
+    ret = zeros(1, 1);
     ret(1, 1) = 10000 / Strategy.SPT(false);
-    ret(2, 1) = toc;
 end
 
 function ret = doTenGA()
-    ret = zeros(2, 10);
-    for i = 1:10
-        tic;
+    ret = zeros(1, 10);
+    parfor i = 1:10
         ret(1, i) = 10000 / Strategy.GA(false);
-        ret(2, i) = toc;
     end
 end
 
 function ret = doTenLBGA()
-    ret = zeros(12, 10);
-    for i = 1:10
-        tic;
+    ret = zeros(1, 10);
+    parfor i = 1:10
         ret(1, i) = 10000 / Strategy.LBGA(false);
-        ret(2, i) = toc;
     end
 end
 
 function ret = doTenALBGA()
     ret = zeros(1, 10);
     for i = 1:10
-        tic;
         ret(1, i) = 10000 / Strategy.ALBGA(false);
-        ret(2, i) = toc;
     end
 end
