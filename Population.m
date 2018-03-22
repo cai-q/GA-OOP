@@ -121,26 +121,26 @@ classdef Population
             % getPopulationalGeneMatrix 获取种群的基因矩阵
             %   该函数返回一个种群的基因矩阵，包含种群所有个体的基因
             
-            ret = zeros(2, Const.POPULATION_SIZE * Const.JOB_NUMBER);
+            ret = zeros(2, Const.POPULATION_SIZE * Const.V.JOB_NUMBER);
             for i = 1:Const.POPULATION_SIZE
-                start = (i - 1) * Const.JOB_NUMBER + 1;
-                finish = i * Const.JOB_NUMBER;
+                start = (i - 1) * Const.V.JOB_NUMBER + 1;
+                finish = i * Const.V.JOB_NUMBER;
                 ret(:, start:finish) = obj.Individualities{i}.Chromosome.Sequence;
             end
         end
         
         function ret =  getStatisticallyBestIndividuality(obj)
-            sequence = zeros(2, Const.JOB_NUMBER);
+            sequence = zeros(2, Const.V.JOB_NUMBER);
             mat = obj.getPopulationalGeneMatrix();
             
-            for j = 1:Const.JOB_NUMBER
+            for j = 1:Const.V.JOB_NUMBER
                 geneCurrentLocation = mat(:, j:20:end);
                 occurredGene = sequence(:, 1:j-1);
-                e = histcounts(geneCurrentLocation(1, :), 1:Const.JOB_NUMBER + 1);
+                e = histcounts(geneCurrentLocation(1, :), 1:Const.V.JOB_NUMBER + 1);
                 e(occurredGene(1, :)) = 0;
                 [g, f] = max(e);
                 if g == 0
-                    f = Const.JOB_NUMBER + 1;
+                    f = Const.V.JOB_NUMBER + 1;
                 end
                 sequence(1, j) = f;
             end
@@ -151,19 +151,19 @@ classdef Population
             [~, index, ~] = unique(firstRow, 'stable');
             temp = firstRow;
             temp(index) = 0;% 不重复的位置0，剩下的就是重复位
-            firstRow(temp > 0 | firstRow == Const.JOB_NUMBER + 1) = 0;
+            firstRow(temp > 0 | firstRow == Const.V.JOB_NUMBER + 1) = 0;
             
             % 将所有标记为0的填入数字
             have = firstRow(firstRow > 0);
-            lost = setdiff(1:Const.JOB_NUMBER, have);
+            lost = setdiff(1:Const.V.JOB_NUMBER, have);
             firstRow(firstRow == 0) = lost;
             
             sequence(1, :) = firstRow;% 第一行完毕，下面处理第二行
             
-            for j = 1:Const.JOB_NUMBER
+            for j = 1:Const.V.JOB_NUMBER
                 filter = mat(1, :) == sequence(1, j);% 找到对于该患者最多出现的医院，filter是逻辑数组
                 hospitals = mat(2, filter);
-                e = histcounts(hospitals, 1:Const.FACTORY_NUMBER + 1);
+                e = histcounts(hospitals, 1:Const.V.FACTORY_NUMBER + 1);
                 [~, f] = max(e);
                 sequence(2, j) = f;
             end

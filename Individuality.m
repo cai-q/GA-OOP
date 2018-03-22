@@ -30,8 +30,8 @@ classdef Individuality
             % mutation 变异过程
             %   该函数不会改变个体本身值，会返回一个新的Individuality实例
 
-            p1 = ceil((Const.JOB_NUMBER - 1) * rand);
-            p2 = p1 + ceil((Const.JOB_NUMBER - p1) * rand);
+            p1 = ceil((Const.V.JOB_NUMBER - 1) * rand);
+            p2 = p1 + ceil((Const.V.JOB_NUMBER - p1) * rand);
 
             mutated = obj.Chromosome.Sequence;
             mutated(1, [p1, p2]) = mutated(1, [p2, p1]);
@@ -52,7 +52,7 @@ classdef Individuality
             pc_2 = parent_2.Chromosome.Sequence;% 父代染色体2
             
             cr=rand;% 产生(0,1)的随机数
-            jobNumber = Const.JOB_NUMBER;
+            jobNumber = Const.V.JOB_NUMBER;
             if cr < Const.CROSSOVER_PROBABILITY
                 p1 = ceil((jobNumber - 1) * rand);
                 p2 = p1 + ceil((jobNumber - p1) * rand);
@@ -159,30 +159,30 @@ classdef Individuality
             
             sequence = obj.Chromosome.Sequence;
             
-            jobFactory = ones(Const.JOB_NUMBER, 1);% n维列向量，长度为患者数量。标记患者到哪个医院就诊
-            processMachine = ones(Const.JOB_NUMBER, 2);% 标记到第几号病床
-            processStart = zeros(Const.JOB_NUMBER, 2);% n * 2 矩阵，n是患者数量。标记该患者两个过程的开始时间
-            processStop = zeros(Const.JOB_NUMBER, 2);% n * 2 矩阵，n是患者数量。标记该患者两个过程的结束时间
+            jobFactory = ones(Const.V.JOB_NUMBER, 1);% n维列向量，长度为患者数量。标记患者到哪个医院就诊
+            processMachine = ones(Const.V.JOB_NUMBER, 2);% 标记到第几号病床
+            processStart = zeros(Const.V.JOB_NUMBER, 2);% n * 2 矩阵，n是患者数量。标记该患者两个过程的开始时间
+            processStop = zeros(Const.V.JOB_NUMBER, 2);% n * 2 矩阵，n是患者数量。标记该患者两个过程的结束时间
             
             processStart(1, 1) = 0;
-            processStop(1, 1) = Const.PROCESS_TIME(sequence(1, 1), 1);
+            processStop(1, 1) = Const.V.PROCESS_TIME(sequence(1, 1), 1);
             
-            machineStop = cell(2, Const.FACTORY_NUMBER);% 2 * n 矩阵，2表示两个阶段，n是医院数量
-            for i = 1:Const.FACTORY_NUMBER
-                machineStop{1, i} = zeros(1, Const.FACTORY_MACHINE_NUMBER(i, 1));% 每个元素初始化为一个长度为n的行向量，n等于该医院用于该阶段的病床数量
-                machineStop{2, i} = zeros(1, Const.FACTORY_MACHINE_NUMBER(i, 2));
+            machineStop = cell(2, Const.V.FACTORY_NUMBER);% 2 * n 矩阵，2表示两个阶段，n是医院数量
+            for i = 1:Const.V.FACTORY_NUMBER
+                machineStop{1, i} = zeros(1, Const.V.FACTORY_MACHINE_NUMBER(i, 1));% 每个元素初始化为一个长度为n的行向量，n等于该医院用于该阶段的病床数量
+                machineStop{2, i} = zeros(1, Const.V.FACTORY_MACHINE_NUMBER(i, 2));
             end     % 初始化病床
             
-            for i = 1:Const.JOB_NUMBER
-                if ismember(sequence(1, i), Const.SPECIAL_JOBS)
-                    possibleHospitalArray = Const.JOB_SPECIFIC_FACTORIES{sequence(1, i)};
-                    
+            for i = 1:Const.V.JOB_NUMBER
+                possibleHospitalArray = Const.V.JOB_SPECIFIC_FACTORIES{sequence(1, i)};
+                
+                if ~isempty(possibleHospitalArray)                    
                     hospitalFlag = 0;
                     minStartTime = 0;
                     for j = 1:length(possibleHospitalArray)
                         nHospitalNumber = possibleHospitalArray(j);
-                        if min(machineStop{1, nHospitalNumber}) + Const.PROCESS_TIME(sequence(1, i), 1) < min(machineStop{2, nHospitalNumber})
-                            currentMinStartTime = min(machineStop{2, nHospitalNumber}) - Const.PROCESS_TIME(sequence(1, i), 1);
+                        if min(machineStop{1, nHospitalNumber}) + Const.V.PROCESS_TIME(sequence(1, i), 1) < min(machineStop{2, nHospitalNumber})
+                            currentMinStartTime = min(machineStop{2, nHospitalNumber}) - Const.V.PROCESS_TIME(sequence(1, i), 1);
                         else
                             currentMinStartTime = min(machineStop{1, nHospitalNumber});
                         end
@@ -200,7 +200,7 @@ classdef Individuality
                 [soonest1, soonestIndex1] = min(machineStop{1, sequence(2, i)});    % 该医院内第一阶段最早开始的时间和病床编号
                 processMachine(i, 1) = soonestIndex1;
                 processStart(i, 1) = soonest1;
-                processStop(i, 1) = processStart(i, 1) + Const.PROCESS_TIME(sequence(1, i), 1);
+                processStop(i, 1) = processStart(i, 1) + Const.V.PROCESS_TIME(sequence(1, i), 1);
                 machineStop{1, sequence(2, i)}(1, soonestIndex1) = processStop(i, 1);
                 %第一阶段分配完毕，PS：未考虑NO-WAIT%
                 
@@ -209,14 +209,14 @@ classdef Individuality
                 processMachine(i, 2) = soonestindex2;
                 if processStop(i, 1) < soonest2
                     processStop(i, 1) = soonest2;
-                    processStart(i, 1) = processStop(i, 1) - Const.PROCESS_TIME(sequence(1, i), 1);
+                    processStart(i, 1) = processStop(i, 1) - Const.V.PROCESS_TIME(sequence(1, i), 1);
                     machineStop{1,sequence(2, i)}(1,soonestIndex1) = processStop(i, 1);
                     processStart(i, 2) = processStop(i, 1);
-                    processStop(i, 2) = processStart(i, 2) + Const.PROCESS_TIME(sequence(1, i), 2);
+                    processStop(i, 2) = processStart(i, 2) + Const.V.PROCESS_TIME(sequence(1, i), 2);
                     machineStop{2, sequence(2, i)}(1, soonestindex2) = processStop(i, 2);
                 else
                     processStart(i, 2) = processStop(i, 1);
-                    processStop(i, 2) = processStart(i, 2) + Const.PROCESS_TIME(sequence(1, i), 2);
+                    processStop(i, 2) = processStart(i, 2) + Const.V.PROCESS_TIME(sequence(1, i), 2);
                     machineStop{2, sequence(2, i)}(1, soonestindex2) = processStop(i, 2);
                 end
             end
@@ -226,7 +226,7 @@ classdef Individuality
         
         function ret = learning(obj, SD, RD, p1, p2)
             sequence = obj.Chromosome.Sequence;
-            for j = 1:Const.JOB_NUMBER
+            for j = 1:Const.V.JOB_NUMBER
                 r = rand;% 生成学习随机数
                 if r <= p1% 如果小于p1，则不变
                     continue;
@@ -255,16 +255,16 @@ classdef Individuality
             [~, index, ~] = unique(firstRow, 'stable');
             temp = firstRow;
             temp(index) = 0;% 不重复的位置0，剩下的就是重复位
-            firstRow(temp > 0 | firstRow == Const.JOB_NUMBER + 1) = 0;
+            firstRow(temp > 0 | firstRow == Const.V.JOB_NUMBER + 1) = 0;
             
             % 将所有标记为0的填入数字
             have = firstRow(firstRow > 0);
-            lost = setdiff(1:Const.JOB_NUMBER, have);
+            lost = setdiff(1:Const.V.JOB_NUMBER, have);
             firstRow(firstRow == 0) = lost;
             
             sequence(1, :) = firstRow;
             
-            for i = 1:Const.JOB_NUMBER
+            for i = 1:Const.V.JOB_NUMBER
                 if sequence(2, i) == -1
                     pos = SD(1, :) == sequence(1, i);
                     sequence(2, i) = SD(2, pos);

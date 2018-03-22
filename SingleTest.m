@@ -1,7 +1,7 @@
-SPT = Strategy.SPT;
-GA = Strategy.GA;
-LBGA = Strategy.LBGA;
-ALBGA = Strategy.ALBGA;
+SPT = Strategy.SPT(true);
+GA = Strategy.GA(true);
+LBGA = Strategy.LBGA(true);
+ALBGA = Strategy.ALBGA(true);
 
 g = 1:Const.MAX_GENERATION;
 

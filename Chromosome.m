@@ -18,19 +18,29 @@ classdef Chromosome
             if isa(param, 'numeric')
                 obj.Sequence = param;
             else
-                obj.Sequence = zeros(2, Const.JOB_NUMBER);
+                obj.Sequence = zeros(2, Const.V.JOB_NUMBER);
                 
-                obj.Sequence(1, :) = randperm(Const.JOB_NUMBER);
-                for i = 1:Const.JOB_NUMBER
-                    obj.Sequence(2, i) = unidrnd(Const.FACTORY_NUMBER);
+                obj.Sequence(1, :) = randperm(Const.V.JOB_NUMBER);
+                for i = 1:Const.V.JOB_NUMBER
+                    obj.Sequence(2, i) = randi(Const.V.FACTORY_NUMBER);
                 end% 初始化染色体，为每个基因排序，并为每个工件随机分配一个工厂
             end
             
-            for i = 1:Const.JOB_NUMBER
+            for i = 1:Const.V.JOB_NUMBER
                 jobID = obj.Sequence(1, i);
-                jobSpecificFactories = Const.JOB_SPECIFIC_FACTORIES{jobID};
+                jobSpecificFactories = Const.V.JOB_SPECIFIC_FACTORIES{jobID};
                 if ~isempty(jobSpecificFactories)
-                    obj.Sequence(2, i) = randsample(jobSpecificFactories, 1);
+                    flag = false;
+                    for j = 1:length(jobSpecificFactories)
+                        if obj.Sequence(2, i) == jobSpecificFactories(j)
+                            flag = true;
+                            break;
+                        end
+                    end
+                    
+                    if ~flag
+                        obj.Sequence(2, i) = jobSpecificFactories(randi(length(jobSpecificFactories)));
+                    end
                 end
             end% 为指定了特定工厂的工件修复染色体基因位
         end

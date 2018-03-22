@@ -3,27 +3,40 @@ classdef Strategy
     %   该类包含了多个算法策略，可根据每个算法策略来生成结果
     
     methods(Static)
-        function res = SPT()
-            res = ones(Const.MAX_GENERATION, 1);
+        function res = SPT(needAllResult)
+            if needAllResult
+                res = ones(Const.MAX_GENERATION, 1);
+            else
+                res = 0;
+            end
             
-            pst = Const.PROCESS_TIME;
+            pst = Const.V.PROCESS_TIME;
             sum_pst = pst(:, 1) + pst(:, 2);
             [~, index] = sort(sum_pst);
             
-            sequence = zeros(2, Const.JOB_NUMBER);
+            sequence = zeros(2, Const.V.JOB_NUMBER);
             sequence(1, :) = index';
-            for i = 1:Const.JOB_NUMBER
-                sequence(2, i) = unidrnd(Const.FACTORY_NUMBER);
+            for i = 1:Const.V.JOB_NUMBER
+                sequence(2, i) = unidrnd(Const.V.FACTORY_NUMBER);
             end
             
             ind = Individuality(sequence);
-            res = res .* ind.Fitness;
+            
+            if(needAllResult)  
+                res = res .* ind.Fitness;
+            else
+                res = ind.Fitness;
+            end
         end
         
-        function res = GA()
+        function res = GA(needAllResult)
             population = Population(true);
             bestIndividuality = population.bestIndividuality;
-            res = zeros(Const.MAX_GENERATION, 2);
+            if needAllResult
+                res = zeros(Const.MAX_GENERATION, 2);
+            else
+                res = 0;
+            end
             
             for i = 1:Const.MAX_GENERATION
                 population = population.selection;% 选择
@@ -39,14 +52,22 @@ classdef Strategy
                 population.Individualities{index} = bestIndividuality;
                 population.Fitness(index) = bestIndividuality.Fitness;% 种群中最差的个体被淘汰，被总体最优个体替换
 
-                res(i, :) = [bestIndividuality.Fitness, sum(population.Fitness) / Const.POPULATION_SIZE];
+                if needAllResult
+                    res(i, :) = [bestIndividuality.Fitness, sum(population.Fitness) / Const.POPULATION_SIZE];
+                else
+                    res = bestIndividuality.Fitness;
+                end
             end
         end
         
-        function res = LBGA()
+        function res = LBGA(needAllResult)
             population = Population(true);
             bestIndividuality = population.bestIndividuality;
-            res = zeros(Const.MAX_GENERATION, 2);
+            if needAllResult
+                res = zeros(Const.MAX_GENERATION, 2);
+            else
+                res = 0;
+            end
 
             p1 = (Const.LEARNING_THRESHOLD_P1_MAX + Const.LEARNING_THRESHOLD_P1_MIN) / 2;
             p2 = (Const.LEARNING_THRESHOLD_P2_MAX + Const.LEARNING_THRESHOLD_P2_MIN) / 2;
@@ -67,14 +88,22 @@ classdef Strategy
 
                 population = population.learning(p1, p2);% 学习
 
-                res(i, :) = [bestIndividuality.Fitness, sum(population.Fitness) / Const.POPULATION_SIZE];
+                if needAllResult
+                    res(i, :) = [bestIndividuality.Fitness, sum(population.Fitness) / Const.POPULATION_SIZE];
+                else
+                    res = bestIndividuality.Fitness;
+                end
             end
         end
         
-        function res = ALBGA()
+        function res = ALBGA(needAllResult)
             population = Population(true);
             bestIndividuality = population.bestIndividuality;
-            res = zeros(Const.MAX_GENERATION, 2);
+            if needAllResult
+                res = zeros(Const.MAX_GENERATION, 2);
+            else
+                res = 0;
+            end
 
             p1 = Const.LEARNING_THRESHOLD_P1_MIN;
             p2 = Const.LEARNING_THRESHOLD_P2_MAX;
@@ -100,7 +129,11 @@ classdef Strategy
                 p2 = p2 - p2_step;
                 population = population.learning(p1, p2);% 学习
 
-                res(i, :) = [bestIndividuality.Fitness, sum(population.Fitness) / Const.POPULATION_SIZE];
+                if needAllResult
+                    res(i, :) = [bestIndividuality.Fitness, sum(population.Fitness) / Const.POPULATION_SIZE];
+                else
+                    res = bestIndividuality.Fitness;
+                end
             end
         end
     end
