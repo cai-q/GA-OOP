@@ -96,7 +96,7 @@ end
 
 function ret = doTenALBGA()
     ret = zeros(1, 10);
-    for i = 1:10
+    parfor i = 1:10
         ret(1, i) = 10000 / Strategy.ALBGA(false);
     end
 end
