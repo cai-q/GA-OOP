@@ -222,8 +222,10 @@ classdef Individuality
             end
             
             if Const.MAKESPAN_CALCULATION_TYPE == 1
-                Cmax = max(cell2mat(machineStop));
-                ret = max(Cmax);
+                Cmax1 = max(cell2mat(machineStop(1, :)));
+                Cmax2 = max(cell2mat(machineStop(2, :)));
+
+                ret = max([Cmax1, Cmax2]);
             else 
                 ret = obj.calculateMakespanByMachineStop(machineStop);
             end
