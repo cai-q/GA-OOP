@@ -3,7 +3,7 @@ GA = Strategy.GA(true);
 LBGA = Strategy.LBGA(true);
 ALBGA = Strategy.ALBGA(true);
 
-g = 1:Const.MAX_GENERATION;
+g = 1:Const.F.MAX_GENERATION;
 
 res = [g', SPT, GA, LBGA, ALBGA];
 

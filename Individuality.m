@@ -53,7 +53,7 @@ classdef Individuality
             
             cr=rand;% 产生(0,1)的随机数
             jobNumber = Const.V.JOB_NUMBER;
-            if cr < Const.CROSSOVER_PROBABILITY
+            if cr < Const.F.CROSSOVER_PROBABILITY
                 p1 = ceil((jobNumber - 1) * rand);
                 p2 = p1 + ceil((jobNumber - p1) * rand);
                 for j = 1:jobNumber
@@ -221,7 +221,12 @@ classdef Individuality
                 end
             end
             
-            ret = obj.calculateMakespanByMachineStop(machineStop);
+            if Const.MAKESPAN_CALCULATION_TYPE == 1
+                Cmax = max(cell2mat(machineStop));
+                ret = max(Cmax);
+            else 
+                ret = obj.calculateMakespanByMachineStop(machineStop);
+            end
         end
         
         function ret = learning(obj, SD, RD, p1, p2)

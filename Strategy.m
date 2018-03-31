@@ -5,7 +5,7 @@ classdef Strategy
     methods(Static)
         function res = SPT(needAllResult)
             if needAllResult
-                res = ones(Const.MAX_GENERATION, 1);
+                res = ones(Const.F.MAX_GENERATION, 1);
             else
                 res = 0;
             end
@@ -33,12 +33,12 @@ classdef Strategy
             population = Population(true);
             bestIndividuality = population.bestIndividuality;
             if needAllResult
-                res = zeros(Const.MAX_GENERATION, 2);
+                res = zeros(Const.F.MAX_GENERATION, 2);
             else
                 res = 0;
             end
             
-            for i = 1:Const.MAX_GENERATION
+            for i = 1:Const.F.MAX_GENERATION
                 population = population.selection;% 选择
                 population = population.crossover;% 交叉
                 population = population.mutation;% 变异
@@ -53,7 +53,7 @@ classdef Strategy
                 population.Fitness(index) = bestIndividuality.Fitness;% 种群中最差的个体被淘汰，被总体最优个体替换
 
                 if needAllResult
-                    res(i, :) = [bestIndividuality.Fitness, sum(population.Fitness) / Const.POPULATION_SIZE];
+                    res(i, :) = [bestIndividuality.Fitness, sum(population.Fitness) / Const.F.POPULATION_SIZE];
                 else
                     res = bestIndividuality.Fitness;
                 end
@@ -64,15 +64,15 @@ classdef Strategy
             population = Population(true);
             bestIndividuality = population.bestIndividuality;
             if needAllResult
-                res = zeros(Const.MAX_GENERATION, 2);
+                res = zeros(Const.F.MAX_GENERATION, 2);
             else
                 res = 0;
             end
 
-            p1 = (Const.LEARNING_THRESHOLD_P1_MAX + Const.LEARNING_THRESHOLD_P1_MIN) / 2;
-            p2 = (Const.LEARNING_THRESHOLD_P2_MAX + Const.LEARNING_THRESHOLD_P2_MIN) / 2;
+            p1 = (Const.LF.P1_MAX + Const.LF.P1_MIN) / 2;
+            p2 = (Const.LF.P2_MAX + Const.LF.P2_MIN) / 2;
 
-            for i = 1:Const.MAX_GENERATION
+            for i = 1:Const.F.MAX_GENERATION
                 population = population.selection;% 选择
                 population = population.crossover;% 交叉
                 population = population.mutation;% 变异
@@ -89,7 +89,7 @@ classdef Strategy
                 population = population.learning(p1, p2);% 学习
 
                 if needAllResult
-                    res(i, :) = [bestIndividuality.Fitness, sum(population.Fitness) / Const.POPULATION_SIZE];
+                    res(i, :) = [bestIndividuality.Fitness, sum(population.Fitness) / Const.F.POPULATION_SIZE];
                 else
                     res = bestIndividuality.Fitness;
                 end
@@ -100,17 +100,17 @@ classdef Strategy
             population = Population(true);
             bestIndividuality = population.bestIndividuality;
             if needAllResult
-                res = zeros(Const.MAX_GENERATION, 2);
+                res = zeros(Const.F.MAX_GENERATION, 2);
             else
                 res = 0;
             end
 
-            p1 = Const.LEARNING_THRESHOLD_P1_MIN;
-            p2 = Const.LEARNING_THRESHOLD_P2_MAX;
-            p1_step = (Const.LEARNING_THRESHOLD_P1_MAX - Const.LEARNING_THRESHOLD_P1_MIN) / Const.MAX_GENERATION;
-            p2_step = (Const.LEARNING_THRESHOLD_P2_MAX - Const.LEARNING_THRESHOLD_P2_MIN) / Const.MAX_GENERATION;
+            p1 = Const.LF.P1_MIN;
+            p2 = Const.LF.P2_MAX;
+            p1_step = (Const.LF.P1_MAX - Const.LF.P1_MIN) / Const.F.MAX_GENERATION;
+            p2_step = (Const.LF.P2_MAX - Const.LF.P2_MIN) / Const.F.MAX_GENERATION;
 
-            for i = 1:Const.MAX_GENERATION
+            for i = 1:Const.F.MAX_GENERATION
                 population = population.selection;% 选择
                 population = population.crossover;% 交叉
                 population = population.mutation;% 变异
@@ -130,7 +130,7 @@ classdef Strategy
                 population = population.learning(p1, p2);% 学习
 
                 if needAllResult
-                    res(i, :) = [bestIndividuality.Fitness, sum(population.Fitness) / Const.POPULATION_SIZE];
+                    res(i, :) = [bestIndividuality.Fitness, sum(population.Fitness) / Const.F.POPULATION_SIZE];
                 else
                     res = bestIndividuality.Fitness;
                 end

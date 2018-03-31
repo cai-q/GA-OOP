@@ -16,7 +16,7 @@ classdef Population
             % 1. 创建每个个体
             % 2. 将其适应度存入适应度数组
             
-            obj.Size = Const.POPULATION_SIZE;
+            obj.Size = Const.F.POPULATION_SIZE;
             obj.Individualities = cell(1, obj.Size);
             obj.Fitness = zeros(1, obj.Size);
             
@@ -44,7 +44,7 @@ classdef Population
             
             q = mapminmax(cumsum(oldFitness), 0, 1);% 归一化
             
-            for i = 1:Const.POPULATION_SIZE
+            for i = 1:Const.F.POPULATION_SIZE
                 selected = find(q >= rand);
                 obj.Individualities{1, i} = oldIndividualities{selected(1)};
                 obj.Fitness(1, i) = oldFitness(selected(1));
@@ -54,7 +54,7 @@ classdef Population
         function obj = crossover(obj)
             % crossover 交叉过程
                        
-            for i=1:2:(Const.POPULATION_SIZE - 1)
+            for i=1:2:(Const.F.POPULATION_SIZE - 1)
                 parent_1 = obj.Individualities{i};
                 parent_2 = obj.Individualities{1 + 1};
                 [child_1, child_2] = parent_1.crossoverWith(parent_2);
@@ -69,8 +69,8 @@ classdef Population
         function obj = mutation(obj)
             % mutation 变异过程
             
-            for i=1:Const.POPULATION_SIZE
-                if rand < Const.MUTATION_PROBABILITY
+            for i=1:Const.F.POPULATION_SIZE
+                if rand < Const.F.MUTATION_PROBABILITY
                     obj.Individualities{i} = obj.Individualities{i}.mutation;
                     obj.Fitness(i) = obj.Individualities{i}.Fitness;
                 end
@@ -83,7 +83,7 @@ classdef Population
             SDI = obj.getSocialDataset().getStatisticallyBestIndividuality();
             RDI = obj.getRandomDataset().getStatisticallyBestIndividuality();
             
-            for i = 1:Const.POPULATION_SIZE
+            for i = 1:Const.F.POPULATION_SIZE
                 obj.Individualities{i} = obj.Individualities{i}.learning(SDI.Chromosome.Sequence, RDI.Chromosome.Sequence, p1, p2);
                 obj.Fitness(i) = obj.Individualities{i}.Fitness;
             end
@@ -101,8 +101,8 @@ classdef Population
             ret.Individualities = ret.Individualities(index);
             ret.Fitness = ret.Fitness(index);
             
-            halfChromosome = ret.Individualities(:, 1:Const.POPULATION_SIZE / 2);
-            halfFitness = ret.Fitness(:, 1:Const.POPULATION_SIZE / 2);
+            halfChromosome = ret.Individualities(:, 1:Const.F.POPULATION_SIZE / 2);
+            halfFitness = ret.Fitness(:, 1:Const.F.POPULATION_SIZE / 2);
             ret.Individualities = [halfChromosome, halfChromosome];
             ret.Fitness = [halfFitness, halfFitness];
         end
@@ -121,8 +121,8 @@ classdef Population
             % getPopulationalGeneMatrix 获取种群的基因矩阵
             %   该函数返回一个种群的基因矩阵，包含种群所有个体的基因
             
-            ret = zeros(2, Const.POPULATION_SIZE * Const.V.JOB_NUMBER);
-            for i = 1:Const.POPULATION_SIZE
+            ret = zeros(2, Const.F.POPULATION_SIZE * Const.V.JOB_NUMBER);
+            for i = 1:Const.F.POPULATION_SIZE
                 start = (i - 1) * Const.V.JOB_NUMBER + 1;
                 finish = i * Const.V.JOB_NUMBER;
                 ret(:, start:finish) = obj.Individualities{i}.Chromosome.Sequence;

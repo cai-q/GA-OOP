@@ -31,7 +31,7 @@ classdef Variable < handle
     end
     
     methods
-        function updateVariable(obj, v)
+        function update(obj, v)
             obj.JOB_NUMBER = v(1, 4);
             obj.FACTORY_NUMBER = v(1, 1);
             obj.SPECIAL_JOB_RATE = 0.1;

@@ -4,7 +4,7 @@ TM = getTestMatrix();
 for i = 1:length(TM)
     % 更新变量
     V = Const.V;
-    V.updateVariable(TM(i, :));
+    V.update(TM(i, :));
 
     tic;
     SPT = doOneSPT();% 做一次SPT
