@@ -1,7 +1,7 @@
 % 构建测试矩阵
 TM = getTestMatrix();
 % 测试开始
-for i = 1:length(TM)
+for i = 1:length(TM(:, 1))
     % 更新变量
     V = Const.V;
     V.update(TM(i, :));
@@ -22,28 +22,21 @@ for i = 1:length(TM)
     ALBGA = doTenALBGA();% 做10次ALBGA
     tALBGA = toc;
     
-    best = min([SPT(1, :), GA(1, :), LBGA(1, :), ALBGA(1, :)]);
-    TM(i, 5) = calculateRE(SPT(1, 1), best);
-    TM(i, 6) = tSPT;
-    
-    reGA = calculateRE(GA(1, :), best);
-    TM(i, 7) = min(reGA);
-    TM(i, 8) = max(reGA);
-    TM(i, 9) = mean(reGA);
-    TM(i, 10) = tGA / 10;
-    
-    reLBGA = calculateRE(LBGA(1, :), best);
-    TM(i, 11) = min(reLBGA);
-    TM(i, 12) = max(reLBGA);
-    TM(i, 13) = mean(reLBGA);
-    TM(i, 14) = tLBGA / 10;
-    
-    reALBGA = calculateRE(ALBGA(1, :), best);
-    TM(i, 15) = min(reALBGA);
-    TM(i, 16) = max(reALBGA);
-    TM(i, 17) = mean(reALBGA);
-    TM(i, 18) = tALBGA / 10;
+    TM(i, 5) = SPT;
+    TM(i, 6:15) = GA;
+    TM(i, 16:25) = LBGA;
+    TM(i, 26:35) = ALBGA;
 end
+
+TM = [(1:27)' TM];
+
+table = array2table(TM, 'VariableNames', {...
+    'No', 'F', 'M1', 'M2', 'N', 'SPT',...
+    'GA01', 'GA02', 'GA03', 'GA04', 'GA05', 'GA06', 'GA07', 'GA08', 'GA09', 'GA10', ...
+    'LBGA01', 'LBGA02', 'LBGA03', 'LBGA04', 'LBGA05', 'LBGA06', 'LBGA07', 'LBGA08', 'LBGA09', 'LBGA10', ...
+    'ALBGA01', 'ALBGA02', 'ALBGA03', 'ALBGA04', 'ALBGA05', 'ALBGA06', 'ALBGA07', 'ALBGA08', 'ALBGA09', 'ALBGA10' ...
+});
+writetable(table, 'MultipleTest.xlsx', 'WriteRowNames', true);
 
 function ret = calculateRE(a, b)
     % 返回a相对于b的相对偏差。如果a是数组，返回值也是数组
@@ -63,7 +56,7 @@ function ret = getTestMatrix()
     LF = length(F);
     LM = length(M1);
     LN = length(N);
-    ret = zeros(LF * LM * LN, 18);% test matrix
+    ret = zeros(LF * LM * LN, 35);% test matrix
 
     for i = 1:LF
         for j = 1:LM
@@ -82,21 +75,21 @@ end
 
 function ret = doTenGA()
     ret = zeros(1, 10);
-    parfor i = 1:10
+    for i = 1:10
         ret(1, i) = 10000 / Strategy.GA(false);
     end
 end
 
 function ret = doTenLBGA()
     ret = zeros(1, 10);
-    parfor i = 1:10
+    for i = 1:10
         ret(1, i) = 10000 / Strategy.LBGA(false);
     end
 end
 
 function ret = doTenALBGA()
     ret = zeros(1, 10);
-    parfor i = 1:10
+    for i = 1:10
         ret(1, i) = 10000 / Strategy.ALBGA(false);
     end
 end

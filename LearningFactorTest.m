@@ -12,7 +12,7 @@ Const.V.update([3,6,4,75]);% 选取中等规模的固定环境变量
 for i = 1:4
     Const.LF.update(learningFactor(i, :))
     res = zeros(1, 20);
-    parfor j = 1:20
+    for j = 1:20
         res(1, j) = 10000 / Strategy.ALBGA(false);
     end
     learningFactor(i, 5) = mean(res);    
