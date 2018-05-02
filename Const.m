@@ -18,4 +18,5 @@ classdef Const
         F = Factor;% 参数因子，句柄类
         LF = LearningFactor;
     end
+    
 end

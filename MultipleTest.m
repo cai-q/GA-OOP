@@ -11,7 +11,7 @@ for i = 1:length(TM)
     tSPT = toc;
     
     tic;
-    GA = doTenGA();% 做10次GA
+    GA = doTenGA(TM(i, :));% 做10次GA
     tGA = toc;
     
     tic;
@@ -80,9 +80,10 @@ function ret = doOneSPT()
     ret(1, 1) = 10000 / Strategy.SPT(false);
 end
 
-function ret = doTenGA()
+function ret = doTenGA(L)
     ret = zeros(1, 10);
     parfor i = 1:10
+        Const.V.update(L);
         ret(1, i) = 10000 / Strategy.GA(false);
     end
 end
