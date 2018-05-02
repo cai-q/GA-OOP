@@ -5,10 +5,10 @@ classdef Factor < handle
     %   定义在此句柄类中主要是为了做因子的正交测试，正交测试时会改变这些变量的值
     
     properties
-        MAX_GENERATION = 50;% 迭代次数
-        POPULATION_SIZE = 100;% 种群个数
-        CROSSOVER_PROBABILITY = 0.6;% 交叉概率
-        MUTATION_PROBABILITY = 0.05;% 变异概率
+        MAX_GENERATION = 200;% 迭代次数
+        POPULATION_SIZE = 200;% 种群个数
+        CROSSOVER_PROBABILITY = 0.8;% 交叉概率
+        MUTATION_PROBABILITY = 0.1;% 变异概率
     end
     
     methods
