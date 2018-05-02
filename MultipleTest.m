@@ -28,7 +28,7 @@ for i = 1:length(TM(:, 1))
     TM(i, 26:35) = ALBGA;
 end
 
-TM = [(1:27)' TM];
+TM = [(1:length(TM(:, 1)))' TM];
 
 table = array2table(TM, 'VariableNames', {...
     'No', 'F', 'M1', 'M2', 'N', 'SPT',...
@@ -37,15 +37,6 @@ table = array2table(TM, 'VariableNames', {...
     'ALBGA01', 'ALBGA02', 'ALBGA03', 'ALBGA04', 'ALBGA05', 'ALBGA06', 'ALBGA07', 'ALBGA08', 'ALBGA09', 'ALBGA10' ...
 });
 writetable(table, 'MultipleTest.xlsx', 'WriteRowNames', true);
-
-function ret = calculateRE(a, b)
-    % 返回a相对于b的相对偏差。如果a是数组，返回值也是数组
-    
-    ret = zeros(1, length(a));
-    for i = 1:length(a)
-        ret(1, i) = (a(1, i) - b) / b * 100;
-    end
-end
 
 function ret = getTestMatrix()
     F = [2, 3, 4];
