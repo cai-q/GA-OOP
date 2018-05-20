@@ -1,5 +1,24 @@
 % 构建测试矩阵
-TM = getTestMatrix();
+
+F = [2, 3, 4];
+M1 = [4, 6, 8];
+M2 = [3, 4, 6];
+N = [50, 75, 100];
+
+LF = length(F);
+LM = length(M1);
+LN = length(N);
+TM = zeros(LF * LM * LN, 35);% test matrix
+
+for i = 1:LF
+    for j = 1:LM
+        for k = 1:LN
+            row = (i - 1) * LM * LN + (j - 1) * LN + k;
+            TM(row, 1:4) = [F(i), M1(j), M2(j), N(k)];
+        end
+    end
+end
+
 % 测试开始
 for i = 1:length(TM(:, 1))
     % 更新变量
