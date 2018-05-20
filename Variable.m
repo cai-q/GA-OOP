@@ -55,7 +55,7 @@ classdef Variable < handle
         end
         
         function ret = generateFactoryMachineNumber(obj, v)
-            ret = ones(obj.FACTORY_NUMBER, Const.PROCESS_STAGE_NUMBER) .* v;
+            ret = [ones(obj.FACTORY_NUMBER, 1) .* v(1), ones(obj.FACTORY_NUMBER, 1) .* v(2)];
         end
         
         function ret = generateProcessTime(obj)
