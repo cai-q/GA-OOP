@@ -1,5 +1,4 @@
 % 构建测试矩阵
-
 F = [2, 3, 4];
 M1 = [4, 6, 8];
 M2 = [3, 4, 6];
@@ -31,27 +30,14 @@ for i = 1:length(TM(:, 1))
     tSPT = toc;
     
     tic;% 做10次GA
-    GA = zeros(1, 10);
-    for j = 1:10
+    GA = zeros(1, 1);
+    for j = 1:1
         GA(1, j) = 10000 / Strategy.GA(false);
     end
     tGA = toc;
     
-    tic;% 做10次LBGA
-    LBGA = zeros(1, 10);
-    for j = 1:10
-        LBGA(1, j) = 10000 / Strategy.LBGA(false);
-    end
-    tLBGA = toc;
-    
-    tic;
-    ALBGA = doTenALBGA();% 做10次ALBGA
-    tALBGA = toc;
-    
     TM(i, 5) = SPT;
     TM(i, 6:15) = GA;
-    TM(i, 16:25) = LBGA;
-    TM(i, 26:35) = ALBGA;
 end
 
 TM = [(1:length(TM(:, 1)))' TM];
@@ -63,29 +49,3 @@ table = array2table(TM, 'VariableNames', {...
     'ALBGA01', 'ALBGA02', 'ALBGA03', 'ALBGA04', 'ALBGA05', 'ALBGA06', 'ALBGA07', 'ALBGA08', 'ALBGA09', 'ALBGA10' ...
 });
 writetable(table, 'MultipleTest.xlsx', 'WriteRowNames', true);
-
-function ret = doOneSPT()
-    ret = zeros(1, 1);
-    ret(1, 1) = 10000 / Strategy.SPT(false);
-end
-
-function ret = doTenGA()
-    ret = zeros(1, 10);
-    for i = 1:10
-        ret(1, i) = 10000 / Strategy.GA(false);
-    end
-end
-
-function ret = doTenLBGA()
-    ret = zeros(1, 10);
-    for i = 1:10
-        ret(1, i) = 10000 / Strategy.LBGA(false);
-    end
-end
-
-function ret = doTenALBGA()
-    ret = zeros(1, 10);
-    for i = 1:10
-        ret(1, i) = 10000 / Strategy.ALBGA(false);
-    end
-end

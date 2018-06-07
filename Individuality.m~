@@ -148,7 +148,8 @@ classdef Individuality
         function ret = calculateFitness(obj)
             % calculateFitness 计算该个体的适应度值
             %   个体的适应度值取值为该个体表示的处理模型所消耗时间的倒数。
-            obj = obj.calculateMakespan;
+            obj = obj.calcu
+            obj.Fitness = 10000 / obj.calculateMakespan;
             ret = obj;
         end
         
@@ -224,15 +225,13 @@ classdef Individuality
             
             Cmax1 = max(cell2mat(machineStop(1, :)));
             Cmax2 = max(cell2mat(machineStop(2, :)));
-            obj.MachineStop = machineStop;
-            
+            obj.MachineStop = [Cmax1, Cmax2];
+
             if Const.MAKESPAN_CALCULATION_TYPE == 1
-                obj.Fitness = 10000 / max([Cmax1, Cmax2]);
+                ret = max([Cmax1, Cmax2]);
             else 
-               obj.Fitness = 10000 / obj.calculateMakespanByMachineStop(machineStop);
+                ret = obj.calculateMakespanByMachineStop(machineStop);
             end
-            
-            ret = obj;
         end
         
         function ret = learning(obj, SD, RD, p1, p2)

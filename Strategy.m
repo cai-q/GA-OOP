@@ -23,9 +23,9 @@ classdef Strategy
             ind = Individuality(sequence);
             
             if(needAllResult)  
-                res = res .* ind.Fitness;
+                res = res .* (10000 / ind.Fitness);
             else
-                res = ind.Fitness;
+                res = 10000 / ind.Fitness;
             end
         end
         
@@ -53,7 +53,7 @@ classdef Strategy
                 population.Fitness(index) = bestIndividuality.Fitness;% 种群中最差的个体被淘汰，被总体最优个体替换
 
                 if needAllResult
-                    res(i, :) = [bestIndividuality.Fitness, sum(population.Fitness) / Const.F.POPULATION_SIZE];
+                    res(i, :) = [10000 / bestIndividuality.Fitness, 10000 / sum(population.Fitness) * Const.F.POPULATION_SIZE];
                 else
                     res = bestIndividuality.Fitness;
                 end
@@ -89,7 +89,7 @@ classdef Strategy
                 population = population.learning(p1, p2);% 学习
 
                 if needAllResult
-                    res(i, :) = [bestIndividuality.Fitness, sum(population.Fitness) / Const.F.POPULATION_SIZE];
+                    res(i, :) = [10000 / bestIndividuality.Fitness, 10000 / sum(population.Fitness) * Const.F.POPULATION_SIZE];
                 else
                     res = bestIndividuality.Fitness;
                 end
@@ -130,7 +130,7 @@ classdef Strategy
                 population = population.learning(p1, p2);% 学习
 
                 if needAllResult
-                    res(i, :) = [bestIndividuality.Fitness, sum(population.Fitness) / Const.F.POPULATION_SIZE];
+                    res(i, :) = [10000 / bestIndividuality.Fitness, 10000 / sum(population.Fitness) * Const.F.POPULATION_SIZE];
                 else
                     res = bestIndividuality.Fitness;
                 end
